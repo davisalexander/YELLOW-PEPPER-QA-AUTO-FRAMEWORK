@@ -5,7 +5,7 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import static com.api.utils.TestDataUtil.readFile;
-import static com.api.utils.TestDataUtil.parseJson;
+import static com.api.utils.TestDataUtil.jsonStrToDto;
 
 @NonNull
 public class AbstractDataHelper {
@@ -23,6 +23,6 @@ public class AbstractDataHelper {
     @Autowired
     protected <T> T readResource(String relativeResourcePath, Class<T> type) throws JsonProcessingException {
         String json = readResource(relativeResourcePath);
-        return parseJson(json, type);
+        return jsonStrToDto(json, type);
     }
 }

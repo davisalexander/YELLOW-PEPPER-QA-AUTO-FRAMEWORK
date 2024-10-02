@@ -22,7 +22,7 @@ public final class TestDataUtil {
         }
     }
 
-    public static <T> T parseJson(String jsonStr, Class<T> type) throws JsonProcessingException {
+    public static <T> T jsonStrToDto(String jsonStr, Class<T> type) throws JsonProcessingException {
         return MAPPER.readValue(jsonStr, type);
     }
 

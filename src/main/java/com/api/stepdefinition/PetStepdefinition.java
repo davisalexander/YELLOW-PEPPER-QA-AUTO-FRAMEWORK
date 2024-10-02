@@ -12,30 +12,25 @@ import com.api.utils.TestContext;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
 
-public class CreatePetStepdefinition {
+public class PetStepdefinition {
 
     private final PetDataHelper petDataHelper;
     private final TestContext context;
-    public CreatePetStepdefinition(TestContext context, PetDataHelper petDataHelper) {
+    public PetStepdefinition(TestContext context, PetDataHelper petDataHelper) {
         this.context = context;
         this.petDataHelper = petDataHelper;
-    }
-
-    @Given("user has access to endpoint {string}")
-    public void userHasAccessToEndpoint(String endpoint) {
-        context.session.put("endpoint", endpoint);
     }
 
     @When("user performs a request to create a new {string} pet")
     public void userCreatePet(String petName) throws JsonProcessingException {
         context.session.put("petName", petName);
         String payloadPet = petDataHelper.getCreatePetPayload();
-        PetRequestDTO petRequestDTO = TestDataUtil.parseJson(payloadPet, PetRequestDTO.class );
+        PetRequestDTO petRequestDTO = TestDataUtil.jsonStrToDto(payloadPet, PetRequestDTO.class );
         context.session.put("petId", petRequestDTO.getId());
         context.response = context.requestSetup().body(payloadPet)
                 .when().post(context.session.get("endpoint").toString());
 
-        PetResponseDTO petResponseDTO = TestDataUtil.parseJson(context.response.body().prettyPrint(), PetResponseDTO.class);
+        PetResponseDTO petResponseDTO = TestDataUtil.jsonStrToDto(context.response.body().prettyPrint(), PetResponseDTO.class);
         Assert.assertEquals(200,context.response.getStatusCode());
         Assert.assertEquals(context.session.get("petName"),petResponseDTO.getName());
     }
@@ -48,7 +43,7 @@ public class CreatePetStepdefinition {
                 .queryParams("petId", context.session.get("petId"))
                 .when().get(context.session.get("endpoint").toString()+petId);
 
-        PetResponseDTO petResponseDTO = TestDataUtil.parseJson(context.response.body().prettyPrint(), PetResponseDTO.class);
+        PetResponseDTO petResponseDTO = TestDataUtil.jsonStrToDto(context.response.body().prettyPrint(), PetResponseDTO.class);
 
         Assert.assertEquals(200,context.response.getStatusCode());
         Assert.assertEquals(context.session.get("petId"),petResponseDTO.getId());    }
@@ -65,16 +60,11 @@ public class CreatePetStepdefinition {
         Assert.assertEquals(200,context.response.getStatusCode());
     }
 
-    @Then("user should get the response code {int}")
-    public void userGetResponseCode(Integer statusCode) {
-        assertEquals(Long.valueOf(statusCode), Long.valueOf(context.response.getStatusCode()));
-    }
-
     @And("user updates the pet {string}")
     public void userUpdatePet(String petId) throws JsonProcessingException {
 
         String payload = petDataHelper.getUpdatePetPayload();
-        PetRequestDTO petRequestDTO = TestDataUtil.parseJson(payload, PetRequestDTO.class );
+        PetRequestDTO petRequestDTO = TestDataUtil.jsonStrToDto(payload, PetRequestDTO.class );
         context.response = context.requestSetup()
                 .body(payload)
                 .when().put(context.session.get("endpoint").toString());
@@ -92,6 +82,5 @@ public class CreatePetStepdefinition {
                 .when().delete(context.session.get("endpoint").toString()+"/{petId}");
 
         assertNotNull("Pet was not deleted", context.response);
-
     }
 }

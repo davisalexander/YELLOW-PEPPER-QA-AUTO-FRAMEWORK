@@ -12,7 +12,7 @@ import io.cucumber.plugin.event.TestCaseFinished;
 
 public class MyTestListener implements ConcurrentEventListener {
 	private static final Logger LOG = LogManager.getLogger(MyTestListener.class);
-	
+
 	@Override
 	public void setEventPublisher(EventPublisher publisher) {
 		publisher.registerHandlerFor(TestCaseFinished.class, this::handleTestCaseFinished);
@@ -27,8 +27,5 @@ public class MyTestListener implements ConcurrentEventListener {
 		if(error != null) {
 			LOG.info(error);
 		}
-		LOG.info("*****************************************************************************************");
-		LOG.info("	Scenario: "+scenarioName+" --> "+status.name());
-		LOG.info("*****************************************************************************************");
 	}
 }
