@@ -1,0 +1,18 @@
+{
+  "id": "7777",
+  "name": "updated_dummy_pet",
+  "category": {
+    "id": 1,
+    "name": "updated_Dogs"
+  },
+  "photoUrls": [
+    "string"
+  ],
+  "tags": [
+    {
+      "id": 0,
+      "name": "string"
+    }
+  ],
+  "status": "available"
+}
