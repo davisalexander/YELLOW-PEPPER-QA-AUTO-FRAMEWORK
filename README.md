@@ -16,3 +16,8 @@ This is a little JAVA API Backend Framework
 ## **Running Test:**
 
     mvn clean test
+
+    
+## **Report:**
+
+Report path target/report 
