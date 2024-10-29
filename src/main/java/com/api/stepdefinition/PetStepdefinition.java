@@ -1,11 +1,12 @@
 package com.api.stepdefinition;
 
 import static org.junit.Assert.*;
+
+import com.api.datahelper.AbstractDataHelper;
 import com.api.model.PetRequestDTO;
 import com.api.utils.ResponseHandler;
 import com.api.utils.TestDataUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.restassured.response.Response;
 import com.api.model.PetResponseDTO;
 import com.api.datahelper.PetDataHelper;
 import com.api.utils.TestContext;
@@ -16,16 +17,19 @@ public class PetStepdefinition {
 
     private final PetDataHelper petDataHelper;
     private final TestContext context;
-    public PetStepdefinition(TestContext context, PetDataHelper petDataHelper) {
+    private final AbstractDataHelper abstractDataHelper;
+
+    public PetStepdefinition(TestContext context, PetDataHelper petDataHelper, AbstractDataHelper abstractDataHelper) {
         this.context = context;
         this.petDataHelper = petDataHelper;
+        this.abstractDataHelper = abstractDataHelper;
     }
 
     @When("user performs a request to create a new {string} pet")
     public void userCreatePet(String petName) throws JsonProcessingException {
         context.session.put("petName", petName);
         String payloadPet = petDataHelper.getCreatePetPayload();
-        PetRequestDTO petRequestDTO = TestDataUtil.jsonStrToDto(payloadPet, PetRequestDTO.class );
+        PetRequestDTO petRequestDTO = abstractDataHelper.jsonStrToDto(payloadPet, PetRequestDTO.class );
         context.session.put("petId", petRequestDTO.getId());
         context.response = context.requestSetup().body(payloadPet)
                 .when().post(context.session.get("endpoint").toString());
@@ -55,8 +59,7 @@ public class PetStepdefinition {
                 .queryParams("status", context.session.get("status"))
                 .when().get(context.session.get("endpoint").toString());
 
-        Response response = context.response;
-        assertNotNull("No pets were found", response);
+        assertNotNull("No pets were found", context.response);
         Assert.assertEquals(200,context.response.getStatusCode());
     }
 
@@ -72,6 +75,7 @@ public class PetStepdefinition {
         PetResponseDTO petResponseDTO = ResponseHandler.deserializedResponse(context.response, PetResponseDTO.class);
         assertNotNull("Pet details were not updated", petResponseDTO);
         Assert.assertEquals(petResponseDTO.getName(), petRequestDTO.getName());
+        Assert.assertEquals(200,context.response.getStatusCode());
     }
 
     @And("user deletes the pet {string}")
@@ -82,5 +86,6 @@ public class PetStepdefinition {
                 .when().delete(context.session.get("endpoint").toString()+"/{petId}");
 
         assertNotNull("Pet was not deleted", context.response);
+        Assert.assertEquals(200,context.response.getStatusCode());
     }
 }

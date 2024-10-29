@@ -1,5 +1,5 @@
 @PetCRUD
-Feature: Create pet via Restful API
+Feature: Create, Read, Update, Delete pet via Restful API
 
   Background: create pet
     Given user has access to endpoint "/pet"

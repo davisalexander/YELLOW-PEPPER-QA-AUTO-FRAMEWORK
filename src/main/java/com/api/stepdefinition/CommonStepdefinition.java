@@ -3,6 +3,8 @@ package com.api.stepdefinition;
 import com.api.utils.TestContext;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import org.junit.Assert;
+
 import static org.junit.Assert.assertEquals;
 
 public class CommonStepdefinition {
